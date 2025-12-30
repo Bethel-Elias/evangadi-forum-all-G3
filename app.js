@@ -9,7 +9,12 @@ app.use(cors());
 //db connection
 const dbconnection = require("./db/dbconfig");
 
+// / Import custom middleware
+const logger = require("./middleware/loggingMiddleware");
+const errorHandler = require("./middleware/errorHandler");
 
+// Use logging middleware for all requests
+app.use(logger);
 
 //user routes middleware file import
 const userRoutes = require("./routes/userRoute");
