@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 const { StatusCodes } = require("http-status-codes");
 const dbconnection = require("../db/dbconfig")
@@ -90,6 +91,21 @@ async function singleQuestion(req, res) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: "An unexpected error occurred" });
     }
 }
+=======
+const { StatusCodes } = require("http-status-codes");
+const dbconnection = require("../db/dbconfig");
+const { v4: uuidv4 } = require("uuid");
+
+
+
+
+
+
+
+
+
+
+>>>>>>> myfork/main
 
 
 

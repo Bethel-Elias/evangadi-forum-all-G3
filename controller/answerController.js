@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const dbconnection = require("../db/dbconfig");
+<<<<<<< HEAD
 // const { v4: uuidv4 } = require("uuid");
 
 //post/add answers
@@ -72,3 +73,25 @@ async function getAnswers(req, res) {
 }
 
 module.exports = { postAnswer, getAnswers };
+=======
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = { postAnswer, getAnswers };
+>>>>>>> myfork/main
