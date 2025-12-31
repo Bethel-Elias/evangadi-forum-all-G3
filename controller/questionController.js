@@ -1,61 +1,69 @@
-const db = require("../db/dbconfig")
+const db = require("../db/dbconfig");
 const { v4: uuidv4 } = require("uuid");
 
 // GET ALL QUESTIONS
-exports.getAllQuestions = (req, res) => {
-  const sql = `
-    SELECT 
-      questions.id,
-      questions.title,
-      questions.description,
-      questions.created_at,
-      users.username
-    FROM questions
-    JOIN users ON questions.user_id = users.id
-    ORDER BY questions.created_at DESC
-  `;
 
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.error("DB Error:", err);
-      return res.status(500).json({ message: "Database error" });
-    }
+exports.getAllQuestions = async (req, res) => {
+  try {
+    const sql = `
+      SELECT 
+        questions.questionid,
+        questions.title,
+        questions.description,
+        questions.tag,
+        users.username
+      FROM questions
+      JOIN users ON questions.userid = users.userid
+      ORDER BY questions.id DESC
+    `;
 
-    res.status(200).json(result);
-  });
+    const [rows] = await db.query(sql);
+
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("FULL SQL ERROR:", err);
+    res.status(500).json({ message: "Database error" });
+  }
 };
+
 
 
 
 // UPDATE QUESTION
 
-exports.updateQuestion = (req, res) => {
- const {id} = req.params.id}
+exports.updateQuestion = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, tag } = req.body;
 
-const sql = "UPDATE FROM questions WHERE id = ?";
+  try {
+    const sql = `
+      UPDATE questions
+      SET title = ?, description = ?, tag = ?
+      WHERE questionid = ?
+    `;
 
-  db.query(sql, [id], (err) => {
-    if (err) {
-      return res.status(500).json({ message: "Database error" });
-    }
+    await db.query(sql, [title, description, tag, id]);
 
-    res.status(200).json({ message: "Question Updated" });
-  });
-
-
+    res.status(200).json({ message: "Question updated successfully" });
+  } catch (err) {
+    console.error("DB Error:", err);
+    res.status(500).json({ message: "Database error" });
+  }
+};
 
 
 // DELETE QUESTION
-exports.deleteQuestion = (req, res) => {
+
+exports.deleteQuestion = async (req, res) => {
   const { id } = req.params;
 
-  const sql = "DELETE FROM questions WHERE id = ?";
-
-  db.query(sql, [id], (err) => {
-    if (err) {
-      return res.status(500).json({ message: "Database error" });
-    }
+  try {
+    const sql = "DELETE FROM questions WHERE questionid = ?";
+    await db.query(sql, [id]);
 
     res.status(200).json({ message: "Question Deleted" });
-  });
+  } catch (err) {
+    console.error("DB Error:", err);
+    res.status(500).json({ message: "Database error" });
+  }
 };
