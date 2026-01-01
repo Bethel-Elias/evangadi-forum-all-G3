@@ -1,7 +1,11 @@
 
 const express = require("express");
 const cors = require("cors");
+<<<<<<< HEAD
+const port = 5500;
+=======
 const port = 6000;
+>>>>>>> myfork/main
 
 const app = express();
 app.use(cors());
@@ -9,7 +13,16 @@ app.use(cors());
 //db connection
 const dbconnection = require("./db/dbconfig");
 
+<<<<<<< HEAD
+// / Import custom middleware
+const logger = require("./middleware/loggingMiddleware");
+const errorHandler = require("./middleware/errorHandler");
 
+// Use logging middleware for all requests
+app.use(logger);
+=======
+
+>>>>>>> myfork/main
 
 //user routes middleware file import
 const userRoutes = require("./routes/userRoute");

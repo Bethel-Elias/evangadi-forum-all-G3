@@ -14,7 +14,11 @@ async function authMiddleware(req,res,next){
     // console.log(token);
 
     try {
+<<<<<<< HEAD
+        const { username, userid } = jwt.verify(token,process.env.DB_JWT_SECRET);
+=======
         const {username,userid} = jwt.verify(token, "secret")
+>>>>>>> myfork/main
         
          req.user = { username, userid };  
         next()
