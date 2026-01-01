@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-const {askQuestion,allQuestions,singleQuestion} = require("../controller/questionController")
+const {
+  askQuestion,
+  getSingleQuestion,
+} = require("../controller/questionController");
 
-//import authentication middleware
-const authMiddleware = require("../middleware/authMiddleware")
+// POST → create a new question
+router.post("/ask", askQuestion);
 
 
-router.post("/ask", authMiddleware, askQuestion);
+// GET → get a single question by questionid (UUID)
+router.get("/:questionid", getSingleQuestion);
 
-router.get("/all-questions",  allQuestions)
-
-router.get("/:id", singleQuestion)
-
-module.exports = router
+module.exports = router;
