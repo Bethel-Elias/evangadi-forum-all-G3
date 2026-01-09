@@ -1,7 +1,3 @@
-const dbconnection = require("../db/dbconfig");
-const bcrypt = require("bcrypt");
-const { StatusCodes } = require("http-status-codes");
-const jwt = require("jsonwebtoken");
 
 
 //register
@@ -58,6 +54,18 @@ async function register(req, res) {
 }
 
 
+
+
+
+
+async function checkUser(req, res) {
+  const username = req.user.username;
+  const userid = req.user.userid;
+
+  return res
+    .status(StatusCodes.OK)
+    .json({ msg: "Valid user", username, userid });
+}
 
 
 
