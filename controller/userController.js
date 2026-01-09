@@ -52,8 +52,57 @@ async function register(req, res) {
       .json({ msg: "An unexpected error occurred." });
   }
 }
+//Login 
 
+async function login(req, res) {
+  //not providing all information
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: "Please provide all required fields" });
+  }
 
+  try {
+    //if user doesnot exist
+    const [user] = await dbconnection.query(
+      "SELECT username,userid,password FROM users_Table WHERE email=?",
+      [email]
+    );
+
+    if (user.length == 0) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ msg: "Invalid username or password or credintial" });
+    }
+
+    //if user exists compare encrypted password with sent password
+    const ismatch = await bcrypt.compare(password, user[0].password);
+    if (!ismatch) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ msg: "Invalid username or password or credintial" });
+    }
+    //if ismatch => JWT(json web token)
+
+    const username = user[0].username;
+    const userid = user[0].userid;
+
+    const token = jwt.sign({ username, userid }, process.env.DB_JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: "User login successful", token, username });
+  } catch (error) {
+    //server error
+    console.log(error.message);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ msg: "An unexpected error occurred" });
+  }
+}
 
 
 
