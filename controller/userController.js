@@ -1,22 +1,8 @@
-const { StatusCodes } = require("http-status-codes");
+async function checkUser(req, res) {
+  const username = req.user.username;
+  const userid = req.user.userid;
 
-// CHECK USER
-const checkUser = async (req, res) => {
-  try {
-    // authMiddleware already verified token & attached req.user
-    res.status(200).json({
-      message: "Valid user",
-      userid: req.user.userid,
-      username: req.user.username,
-    });
-  } catch (error) {
-    res.status(401).json({
-      message: "Authentication invalid",
-    });
-  }
-};
-module.exports = {
-  register,
-  login,
-  checkUser,
-};
+  return res
+    .status(StatusCodes.OK)
+    .json({ msg: "Valid user", username, userid });
+}
