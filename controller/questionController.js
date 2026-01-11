@@ -1,4 +1,5 @@
 
+
 async function allQuestions(req, res) {
   try {
     const [questions] = await dbconnection.query(
