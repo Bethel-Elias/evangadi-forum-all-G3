@@ -1,71 +1,65 @@
-const { StatusCodes } = require("http-status-codes");
+// Import database connection
 const dbconnection = require("../db/dbconfig");
+// Import HTTP status codes
+const { StatusCodes } = require("http-status-codes");
 
-
-
-
-
-
-
-
-
-async function getAnswers(req, res) {
-  const { questionId } = req.params;
-
-  if (!questionId) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: "Question ID is required" });
-  }
-
+// ============ POST (Create) Answer Controller ============ //
+async function postAnswer(req, res) {
   try {
-    const [answers] = await dbconnection.query(
-      `SELECT 
-         a.answerid,
-         a.answer,
-         a.created_at,
-         u.username
-       FROM answers_table a
-       JOIN users_table u ON a.userid = u.userid
-       WHERE a.questionid = ?
-       ORDER BY a.created_at ASC`,
-      [questionId]
-    );
+    // Destructure answer and questionid from request body
+    const { answer, questionid } = req.body;
 
-    if (answers.length === 0) {
-      return res
-        .status(StatusCodes.OK)
-        .json({ msg: "No answers found", answers: [] });
+    // Get authenticated user's ID from middleware
+    const userid = req.user?.userid;
+
+    // Validate required fields
+    if (!answer || !questionid) {
+        return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ msg: "Answer and question ID are required." });
     }
 
-    res.status(StatusCodes.OK).json({ answers });
-  } catch (error) {
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ msg: "An unexpected error occurred." });
-  }
+    // Validate authentication
+    if (!userid) {
+        return res
+            .status(StatusCodes.UNAUTHORIZED)
+            .json({ msg: "Authentication required." });
+    }
+
+    // Insert the new answer into database
+    const [result] = await dbconnection.query(
+        "INSERT INTO answers_table (questionid, userid, answer) VALUES (?,?,?)",
+        [questionid, userid, answer]
+    );
+
+    // Fetch the newly created answer with user information
+    const [newAnswer] = await dbconnection.query(
+        `
+        SELECT 
+            a.answerid,
+            a.answer,
+            a.created_at,
+            u.username
+        FROM answers_table a
+        JOIN users_Table u ON a.userid = u.userid
+        WHERE a.answerid = ?
+        `,
+        [result.insertId]
+    );
+
+    // Send back the newly created answer
+    return res.status(StatusCodes.CREATED).json({
+        msg: "Answer posted successfully",
+        answer: newAnswer[0],
+    });
+
+} catch (error) {
+    console.error("Post Answer Error:", error);
+
+    return res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ msg: "An unexpected error occurred." });
+}
 }
 
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = { postAnswer, getAnswers };
+module.exports = postAnswer;
