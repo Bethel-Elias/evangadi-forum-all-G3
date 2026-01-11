@@ -1,16 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const {askQuestion,allQuestions,singleQuestion} = require("../controller/questionController")
+const {
+    createQuestion,
+    getAllQuestions,
+    getSingleQuestion,
+    updateQuestion,
+    deleteQuestion
+} = require("../controllers/questioncontroller");
 
-//import authentication middleware
-const authMiddleware = require("../middleware/authMiddleware")
+// Create a question
+router.post("/", createQuestion);
 
+// Get all questions
+router.get("/", getAllQuestions);
 
-router.post("/ask", authMiddleware, askQuestion);
+// Update a question
+router.put("/:id", updateQuestion);
 
-router.get("/all-questions",  allQuestions)
+// Delete a question
+router.delete("/:id", deleteQuestion);
 
-router.get("/:id", singleQuestion)
-
-module.exports = router
+module.exports = router;
