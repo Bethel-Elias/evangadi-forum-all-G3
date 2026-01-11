@@ -1,10 +1,8 @@
-const { StatusCodes } = require("http-status-codes");
-const dbconnection = require("../db/dbconfig");
 
 
 
 
-
+    //get answers by question id
 async function getAnswers(req, res) {
   const { questionId } = req.params;
 
@@ -42,4 +40,4 @@ async function getAnswers(req, res) {
   }
 }
 
-module.exports = { getAnswers };
+module.exports = { postAnswer,getAnswers };
