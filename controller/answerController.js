@@ -5,10 +5,6 @@ const dbconnection = require("../db/dbconfig");
 
 
 
-
-
-
-
 async function getAnswers(req, res) {
   const { questionId } = req.params;
 
@@ -46,26 +42,4 @@ async function getAnswers(req, res) {
   }
 }
 
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = { postAnswer, getAnswers };
+module.exports = { getAnswers };
