@@ -18,11 +18,11 @@ async function register(req, res) {
 
   try {
     //if username or email exists
-    const [user] = await dbconnection.query(
+    const [existingUser] = await dbconnection.query(
       "SELECT username,userid FROM users_Table WHERE username=? or email=?",
       [username, email]
     );
-    if (user.length > 0) {
+    if (existingUser.length > 0) {
       return res
         .status(StatusCodes.CONFLICT)
         .json({ msg: "User already existed" });
@@ -41,13 +41,25 @@ async function register(req, res) {
     const hashedpassword = await bcrypt.hash(password, salt);
 
     //user inserted all information
-    await dbconnection.query(
+    const [result] = await dbconnection.query(
       "INSERT INTO users_Table(username, firstname, lastname, email, password) values (?,?,?,?,?)",
       [username, firstname, lastname, email, hashedpassword]
     );
+
+    // CREATE TOKEN
+    const token = jwt.sign({userid: result.insertId,username,},process.env.DB_JWT_SECRET,{ expiresIn: "1d" }
+    );
     return res
       .status(StatusCodes.CREATED)
-      .json({ msg: "User registered successfully" });
+      .json({ 
+        msg: "User registered successfully",
+        token,
+        user: {
+        userid: result.insertId,
+        username,
+        email,
+      },
+      });
   } catch (error) {
     //for server error
     console.log(error.message);
