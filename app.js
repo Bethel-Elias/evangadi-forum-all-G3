@@ -20,7 +20,8 @@ const questionRoutes = require("./routes/questionRoute");
 //answer routes middleware file import
 const answerRoutes = require("./routes/answerRoute");
 
-
+//like unlike coment middleware file import
+const likeUnlikeComentRoutes = require("./routes/likeUnlikeComentRoute");
 
 
 //json middleware to extract json data
@@ -37,6 +38,8 @@ app.use("/api/questions",  questionRoutes);
 //answer routes middleware
 app.use("/api/answers",  answerRoutes);
 
+//likeunlikeComent middleware
+app.use("/api/answers", likeUnlikeComentRoutes);
 
 
 async function start() {

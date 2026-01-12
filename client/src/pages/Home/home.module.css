@@ -1,0 +1,178 @@
+.home_container {
+  width: 80%;
+  /* margin: auto; */
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+.home_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 50px;
+}
+
+.home_header h3 {
+  font-weight: 400;
+ 
+}
+
+/* Ask button */
+.ask_btn {
+  background-color: #516cf0;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 4px;
+ 
+ 
+}
+
+.ask_btn a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Question list */
+.question_list {
+  margin-top: 20px;
+}
+
+/* Remove link styling */
+.question_link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Question card */
+.question_card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 16px;
+   
+}
+.question_arrow {
+  margin-left: auto;
+  font-size: 35px;
+  color: #222020;
+   
+}
+.question_card:hover .question_arrow {
+  color: #516cf0;
+}
+
+/* Left side (avatar + name) */
+.question_left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 100px;
+}
+
+.avatar {
+  font-size: 80px;
+  color: #222020;
+}
+
+.username {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #555;
+}
+
+/* Right side (title) */
+
+.question_right {
+  flex: 1;
+}
+.question_right h4 {
+  font-weight: 500;
+  color: #333;
+  /* padding-right: 600px; */
+}
+
+/* Hover effect  */
+.question_card:hover h4 {
+  color: #516cf0;
+}
+.question_card:hover {
+  background-color: #f5f7ff;
+  cursor: pointer;
+}
+hr {
+  border: none;
+  border-top: 2px solid #e6e6e6;
+  margin: 10px 0;
+}
+
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .home_container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .home_header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding-bottom: 30px;
+  }
+
+  .ask_btn {
+    align-self: flex-end;
+  }
+
+  .question_card {
+    gap: 12px;
+  }
+
+  .avatar {
+    font-size: 60px;
+  }
+
+  .question_arrow {
+    font-size: 28px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .home_header h3 {
+    font-size: 16px;
+  }
+
+  .ask_btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .question_card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .question_left {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    font-size: 50px;
+  }
+
+  .username {
+    font-size: 13px;
+  }
+
+  .question_arrow {
+    align-self: flex-end;
+    font-size: 26px;
+  }
+}
+
