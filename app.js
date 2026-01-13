@@ -36,7 +36,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/questions",  questionRoutes);
 
 //answer routes middleware
-app.use("/api/answers",  answerRoutes);
+app.use("/api",  answerRoutes);
 
 //likeunlikeComent middleware
 app.use("/api/answers", likeUnlikeComentRoutes);

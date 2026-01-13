@@ -6,15 +6,15 @@ const { reactAnswer, getReactions,addComment,getComment } = require("../controll
 const authMiddleware = require("../middleware/authMiddleware");
 
 // post like/unlike answer
-router.post("/answers/:id/reactions", authMiddleware, reactAnswer)
+router.post("/:id/reactions", authMiddleware, reactAnswer)
 
 //get like/unlike counts
-router.get("/answers/:id/reactions", getReactions)
+router.get("/:id/reactions", getReactions)
 
 //add comment
-router.post("/answers/:id/comments", authMiddleware, addComment)
+router.post("/:id/comments", authMiddleware, addComment)
 
 //get comment
-router.get("/answers/:id/comments", getComment)
+router.get("/:id/comments", getComment)
 
 module.exports = router;

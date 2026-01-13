@@ -55,19 +55,46 @@ function QuestionDetails() {
   };
 
   /* ---------------- LIKE / DISLIKE ---------------- */
-  const reactToAnswer = async (answerid, type) => {
-    if (!token) return alert("You must be logged in to react.");
 
-    try {
-      await axios.post(
-        `/answers/${answerid}/reactions`,
-        { type },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      fetchReactions(answerid);
-    } catch (err) {
-      console.error(err);
-    }
+  const reactToAnswer = (answerid, type) => {
+    setReactions((prev) => {
+      const current = prev[answerid] || {
+        like: 0,
+        dislike: 0,
+        userReaction: null,
+      };
+
+      let { like, dislike, userReaction } = current;
+
+      //  user clicks the SAME reaction again → remove it
+      if (userReaction === type) {
+        if (type === "like") like--;
+        if (type === "dislike") dislike--;
+        userReaction = null;
+      }
+
+      //  user switches reaction
+      else {
+        // remove previous reaction
+        if (userReaction === "like") like--;
+        if (userReaction === "dislike") dislike--;
+
+        // add new reaction
+        if (type === "like") like++;
+        if (type === "dislike") dislike++;
+
+        userReaction = type;
+      }
+
+      return {
+        ...prev,
+        [answerid]: {
+          like: Math.max(like, 0),
+          dislike: Math.max(dislike, 0),
+          userReaction,
+        },
+      };
+    });
   };
 
   /* ---------------- FETCH COMMENTS ---------------- */
@@ -166,16 +193,30 @@ function QuestionDetails() {
 
               {/* REACTIONS */}
               <div className={style.reactionBar}>
-                <button onClick={() => reactToAnswer(a.answerid, "like")}>
+                <button
+                  onClick={() => reactToAnswer(a.answerid, "like")}
+                  style={{
+                    color:
+                      reactions[a.answerid]?.userReaction === "like"
+                        ? "blue"
+                        : "black",
+                  }}
+                >
                   <AiOutlineLike />
-                  {reactions[a.answerid]?.find((r) => r.type === "like")
-                    ?.count || 0}
+                  {reactions[a.answerid]?.like || 0}
                 </button>
 
-                <button onClick={() => reactToAnswer(a.answerid, "dislike")}>
+                <button
+                  style={{
+                    color:
+                      reactions[a.answerid]?.userReaction === "dislike"
+                        ? "red"
+                        : "black",
+                  }}
+                  onClick={() => reactToAnswer(a.answerid, "dislike")}
+                >
                   <AiOutlineDislike />
-                  {reactions[a.answerid]?.find((r) => r.type === "dislike")
-                    ?.count || 0}
+                  {reactions[a.answerid]?.dislike || 0}
                 </button>
 
                 <button
