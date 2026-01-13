@@ -45,14 +45,14 @@ function QuestionDetails() {
   }, [id]);
 
   /* ---------------- FETCH REACTIONS ---------------- */
-  const fetchReactions = async (answerid) => {
-    try {
-      const res = await axios.get(`/answers/${answerid}/reactions`);
-      setReactions((prev) => ({ ...prev, [answerid]: res.data }));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const fetchReactions = async (answerid) => {
+  //   try {
+  //     const res = await axios.get(`/answers/${answerid}/reactions`);
+  //     setReactions((prev) => ({ ...prev, [answerid]: res.data }));
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   /* ---------------- LIKE / DISLIKE ---------------- */
 
