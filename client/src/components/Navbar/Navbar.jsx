@@ -10,11 +10,11 @@ function Navbar() {
   const { user, setuser, setToken } = useContext(AppState);
 
   const logout = () => {
-    localStorage.removeItem("token"); // ✅ remove token
+    localStorage.removeItem("token"); // remove token
     delete axios.defaults.headers.common["Authorization"]; // optional
     setToken(null); // update state so navbar re-renders
     setuser(null);
-    navigate("/login", { replace: true });
+    navigate("/login");
   };
 
   return (
@@ -23,7 +23,7 @@ function Navbar() {
         <img src="/10001.png" alt="logo" />
       </div>
       <div>
-        <Link to="/">Home</Link>
+        <Link to={user ? "/" : "/login"}>Home</Link>
         <Link to="/how-it-works">How it Works</Link>
 
         {!user ? (
