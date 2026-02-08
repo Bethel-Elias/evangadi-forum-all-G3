@@ -9,7 +9,7 @@ const dbconnection = mysql2.createPool({
   host: "localhost",
   database: process.env.DB_DATABASE,
   connectionLimit: 10,
-  socketPath: "/Applications/MAMP/tmp/mysql/mysql.sock",
+  port: 3306
 });
 
 //to check mysql connection to the server

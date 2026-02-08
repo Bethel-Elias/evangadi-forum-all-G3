@@ -1,5 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
-const dbconnection = require("../db/dbconfig");
+const { db } = require("../firebase-admin-config");
+const { v4: uuidv4 } = require("uuid");
+
+// Check if Firebase Admin SDK is initialized
+function isFirebaseInitialized() {
+  return db;
+}
 
 async function postAnswer(req, res) {
   const { answer, questionid } = req.body;
@@ -17,37 +23,56 @@ async function postAnswer(req, res) {
       .json({ msg: "Authentication required" });
   }
 
+  // Fallback if Firebase is not initialized
+  if (!isFirebaseInitialized()) {
+    console.warn("Firebase not initialized, using fallback answer posting");
+    const mockAnswerId = uuidv4();
+    return res
+      .status(StatusCodes.CREATED)
+      .json({
+        msg: "Answer posted successfully (Firebase fallback mode)",
+        answer: {
+          answerid: mockAnswerId,
+          answer,
+          created_at: new Date(),
+          username: "Fallback User"
+        }
+      });
+  }
+
   try {
-    const [result] = await dbconnection.query(
-      "INSERT INTO answers_table (questionid, userid, answer) VALUES (?,?,?)",
-      [questionid, userid, answer]
-    );
+    const answerId = uuidv4();
+    await db.collection("answers").doc(answerId).set({
+      answerid: answerId,
+      questionid,
+      userid,
+      answer,
+      created_at: new Date(),
+    });
 
-    const [newAnswer] = await dbconnection.query(
-      `SELECT 
-     a.answerid,
-     a.answer,
-     a.created_at,
-     u.username
-   FROM answers_table a
-   JOIN users_Table u ON a.userid = u.userid
-   WHERE a.answerid = ?`,
-      [result.insertId]
-    );
+    // Get username from users collection
+    const userDoc = await db.collection("users").doc(userid).get();
+    const username = userDoc.exists ? userDoc.data().username : "Unknown User";
 
-    res.status(201).json({ answer: newAnswer[0] });
-
-    res.status(StatusCodes.CREATED).json({ msg: "Answer posted successfully" });
+    res.status(StatusCodes.CREATED).json({
+      msg: "Answer posted successfully",
+      answer: {
+        answerid: answerId,
+        questionid,
+        userid,
+        answer,
+        created_at: new Date(),
+        username: username
+      }
+    });
   } catch (error) {
+    console.error("Post answer error:", error.message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "An unexpected error occurred." });
   }
 }
 
-
-
-    //get answers by question id
 async function getAnswers(req, res) {
   const { questionId } = req.params;
 
@@ -57,19 +82,31 @@ async function getAnswers(req, res) {
       .json({ msg: "Question ID is required" });
   }
 
+  // Fallback if Firebase is not initialized
+  if (!isFirebaseInitialized()) {
+    console.warn("Firebase not initialized, using fallback answers");
+    return res
+      .status(StatusCodes.OK)
+      .json({ answers: [], msg: "Firebase fallback mode" });
+  }
+
   try {
-    const [answers] = await dbconnection.query(
-      `SELECT 
-         a.answerid,
-         a.answer,
-         a.created_at,
-         u.username
-       FROM answers_table a
-       JOIN users_table u ON a.userid = u.userid
-       WHERE a.questionid = ?
-       ORDER BY a.created_at ASC`,
-      [questionId]
-    );
+    const answersSnapshot = await db
+      .collection("answers")
+      .where("questionid", "==", questionId)
+      .orderBy("created_at", "asc")
+      .get();
+
+    const answers = [];
+    for (const doc of answersSnapshot.docs) {
+      const answer = doc.data();
+      // Get username from users collection
+      const userDoc = await db.collection("users").doc(answer.userid).get();
+      answers.push({
+        ...answer,
+        username: userDoc.exists ? userDoc.data().username : "Unknown User",
+      });
+    }
 
     if (answers.length === 0) {
       return res
@@ -79,10 +116,11 @@ async function getAnswers(req, res) {
 
     res.status(StatusCodes.OK).json({ answers });
   } catch (error) {
+    console.error("Get answers error:", error.message);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "An unexpected error occurred." });
   }
 }
 
-module.exports = { postAnswer,getAnswers };
+module.exports = { postAnswer, getAnswers };

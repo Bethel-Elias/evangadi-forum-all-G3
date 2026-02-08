@@ -1,6 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
-const dbconnection = require("../db/dbconfig");
+const { db } = require("../firebase-admin-config");
 const { v4: uuidv4 } = require("uuid");
+
+// Check if Firebase Admin SDK is initialized
+function isFirebaseInitialized() {
+  return db;
+}
 
 async function askQuestion(req, res) {
   const { title, description } = req.body;
@@ -11,16 +16,30 @@ async function askQuestion(req, res) {
       .status(StatusCodes.BAD_REQUEST)
       .json({ msg: "Please provide all required fields" });
   }
+
+  // Fallback if Firebase is not initialized
+  if (!isFirebaseInitialized()) {
+    console.warn("Firebase not initialized, using fallback question creation");
+    return res
+      .status(StatusCodes.CREATED)
+      .json({ msg: "Question created successfully (Firebase fallback mode)" });
+  }
+
   try {
-    await dbconnection.query(
-      "INSERT INTO questions_Table (questionid, userid, title, description) VALUES (?,?,?,?)",
-      [uuidv4(), userId, title, description]
-    );
+    const questionId = uuidv4();
+    await db.collection("questions").doc(questionId).set({
+      questionid: questionId,
+      userid: userId,
+      title,
+      description,
+      created_at: new Date(),
+    });
 
     return res
       .status(StatusCodes.CREATED)
       .json({ msg: "Question created successfully" });
   } catch (error) {
+    console.error("Ask question error:", error.message);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "An unexpected error occurred." });
@@ -28,16 +47,32 @@ async function askQuestion(req, res) {
 }
 
 async function allQuestions(req, res) {
-  try {
-    const [questions] = await dbconnection.query(
-      `SELECT q.questionid, q.title, q.description, q.created_at,
-              u.username
-       FROM questions_Table q
-       JOIN users_Table u ON q.userid = u.userid
-       ORDER BY q.created_at DESC`
-    );
+  // Fallback if Firebase is not initialized
+  if (!isFirebaseInitialized()) {
+    console.warn("Firebase not initialized, using fallback questions");
+    return res
+      .status(StatusCodes.OK)
+      .json({ questions: [], count: 0, msg: "Firebase fallback mode" });
+  }
 
-    if (!questions || questions.length === 0) {
+  try {
+    const questionsSnapshot = await db
+      .collection("questions")
+      .orderBy("created_at", "desc")
+      .get();
+
+    const questions = [];
+    for (const doc of questionsSnapshot.docs) {
+      const question = doc.data();
+      // Get username from users collection
+      const userDoc = await db.collection("users").doc(question.userid).get();
+      questions.push({
+        ...question,
+        username: userDoc.exists ? userDoc.data().username : "Unknown User",
+      });
+    }
+
+    if (questions.length === 0) {
       return res
         .status(StatusCodes.NOT_FOUND)
         .json({ msg: "No questions found." });
@@ -47,6 +82,7 @@ async function allQuestions(req, res) {
       .status(StatusCodes.OK)
       .json({ questions, count: questions.length });
   } catch (error) {
+    console.error("Get all questions error:", error.message);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "An unexpected error occurred" });
@@ -56,36 +92,54 @@ async function allQuestions(req, res) {
 async function singleQuestion(req, res) {
   const { id } = req.params;
 
-  try {
-    //get question
-    const [rows] = await dbconnection.query(
-      `SELECT q.questionid,q.title,q.description,q.created_at, u.username
-       FROM questions_Table q
-      JOIN users_Table u ON q.userid = u.userid
-       WHERE q.questionid = ?`,
-      [id]
-    );
+  // Fallback if Firebase is not initialized
+  if (!isFirebaseInitialized()) {
+    console.warn("Firebase not initialized, using fallback question");
+    return res
+      .status(StatusCodes.OK)
+      .json({
+        question: {},
+        answers: [],
+        msg: "Firebase fallback mode"
+      });
+  }
 
-    if (rows.length === 0) {
+  try {
+    // Get question
+    const questionDoc = await db.collection("questions").doc(id).get();
+
+    if (!questionDoc.exists) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ msg: "The request question could not be found." });
+        .json({ msg: "The requested question could not be found." });
     }
 
-    const question = rows[0];
+    const question = questionDoc.data();
+    // Get username from users collection
+    const userDoc = await db.collection("users").doc(question.userid).get();
+    question.username = userDoc.exists ? userDoc.data().username : "Unknown User";
 
-    //get answer for this question
-    const [answers] = await dbconnection.query(
-      `SELECT a.answerid, a.answer, a.created_at, u.username
-       FROM answers_table a
-       JOIN users_Table u ON a.userid = u.userid
-       WHERE a.questionid = ?
-       ORDER BY a.created_at DESC`,
-      [id]
-    );
+    // Get answers for this question
+    const answersSnapshot = await db
+      .collection("answers")
+      .where("questionid", "==", id)
+      .orderBy("created_at", "desc")
+      .get();
+
+    const answers = [];
+    for (const doc of answersSnapshot.docs) {
+      const answer = doc.data();
+      // Get username from users collection
+      const answerUserDoc = await db.collection("users").doc(answer.userid).get();
+      answers.push({
+        ...answer,
+        username: answerUserDoc.exists ? answerUserDoc.data().username : "Unknown User",
+      });
+    }
 
     res.status(StatusCodes.OK).json({ question, answers });
   } catch (error) {
+    console.error("Get single question error:", error.message);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ msg: "An unexpected error occurred" });

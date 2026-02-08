@@ -1,7 +1,7 @@
 
 const express = require("express");
 const cors = require("cors");
-const port = 6000;
+const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
@@ -33,10 +33,10 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 
 //question routes middleware
-app.use("/api/questions",  questionRoutes);
+app.use("/api/questions", questionRoutes);
 
 //answer routes middleware
-app.use("/api",  answerRoutes);
+app.use("/api", answerRoutes);
 
 //likeunlikeComent middleware
 app.use("/api/answers", likeUnlikeComentRoutes);
@@ -44,13 +44,23 @@ app.use("/api/answers", likeUnlikeComentRoutes);
 
 async function start() {
   try {
+    console.log("Attempting to connect to database...");
     const result = await dbconnection.execute("select 'test' ");
-    // console.log(result)
-    await app.listen(port);
-    console.log("database connection established");
-    console.log(`server is running at ${port}`);
-  } catch (error) {
-    console.log(error.message);
+    console.log("Database connection test passed:", result[0][0]);
+  } catch (dbError) {
+    console.error("Database connection failed:", dbError);
+    console.warn("Server will start without database connection. Some features may not work.");
+  }
+
+  try {
+    const server = app.listen(port);
+    console.log(`Server is running at http://localhost:${port}`);
+    server.on('error', (err) => {
+      console.error("Server error:", err);
+    });
+  } catch (serverError) {
+    console.error("Server failed to start:", serverError);
+    process.exit(1); // Exit with error code
   }
 }
 start();
