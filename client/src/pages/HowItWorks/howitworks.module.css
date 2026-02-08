@@ -1,0 +1,77 @@
+.howitworks {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  /* alignment */
+  text-align: left;
+
+  /* typography */
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #374151;
+
+  /* keep your line breaks */
+  white-space: pre-line;
+}
+.howitworks p{
+    text-align: left;
+    margin-left: 50px;
+}
+.howitworks h3{
+    font-weight: normal;
+}
+.howitworks h1{
+    color:  #516cf0;
+    text-align: center;
+}
+
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .howitworks {
+    max-width: 90%;
+    margin: 30px auto;
+    padding: 0 15px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .howitworks p {
+    margin-left: 20px;
+  }
+
+  .howitworks h1 {
+    font-size: 22px;
+  }
+
+  .howitworks h3 {
+    font-size: 16px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .howitworks {
+    margin: 20px auto;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .howitworks p {
+    margin-left: 0; /* remove left indent on small screens */
+  }
+
+  .howitworks h1 {
+    font-size: 20px;
+  }
+
+  .howitworks h3 {
+    font-size: 15px;
+    text-align: center;
+  }
+}

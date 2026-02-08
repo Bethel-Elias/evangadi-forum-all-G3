@@ -1,0 +1,68 @@
+nav {
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+nav a {
+  margin-right: 25px;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 500;
+ 
+}
+
+nav button {
+  background: #516cf0;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+nav a:hover{
+  color: rgb(220, 71, 71);
+}
+nav button:hover{
+   background-color: rgb(220, 71, 71);
+}
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  nav {
+    padding: 0 15px;
+  }
+
+  nav a {
+    margin-right: 15px;
+    font-size: 14px;
+  }
+
+  nav button {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  nav {
+    flex-direction: column;
+    height: auto;
+    padding: 10px 0;
+    gap: 10px;
+  }
+
+  nav a {
+    margin-right: 0;
+  }
+
+  nav button {
+    width: 90%;
+    text-align: center;
+  }
+}

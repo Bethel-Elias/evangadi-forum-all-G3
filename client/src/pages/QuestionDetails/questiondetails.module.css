@@ -1,0 +1,348 @@
+ /* Main container */
+.questionDetails {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background-color: #f8f9fb;
+  border-radius: 12px;
+  font-family: Arial, sans-serif;
+ 
+}
+
+/* Question section */
+.questionSection {
+  margin-bottom: 20px;
+}
+.question{
+    font-size: 30px;
+    font-weight: bold;
+    padding-bottom: 30px;
+   
+}
+
+.questionTitle {
+  font-size: 26px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 10px;
+}
+.questionTitle svg{
+    color: #516cf0;
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.questionDescripition {
+  font-size: 20px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 8px;
+  padding-left: 60px;
+}
+
+.questionAskedby {
+  font-size: 15px;
+  color: #777;
+  padding-left: 60px;
+}
+
+/* Divider */
+.hrLine {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 25px 0;
+}
+
+/* Answer section */
+.answerSection {
+  margin-top: 20px;
+}
+
+.community{
+text-decoration: underline;
+text-decoration-color: orange;
+text-decoration-thickness: 2px;
+text-underline-offset: 6px;
+
+}
+
+/* Single answer card */
+.answerCard {
+  background-color: #ffffff;
+  display: flex;
+  padding: 15px 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  gap: 30px;
+ align-items: center;
+ flex-direction: column;
+}
+
+
+/* Answer user */
+.answerUser {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  
+}
+
+.answerContent {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+.answerContent p{
+  margin-top: 20px;
+}
+.avatar {
+  font-size: 80px;
+  color: #222020;
+  
+}
+
+
+
+.answerUser p {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Answer text */
+.answerText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Answer form */
+.answerForm {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.answerForm textarea {
+  min-height: 120px;
+  padding: 5px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+.answerForm textarea:focus {
+  outline: none;
+  border-color: #516cf0;
+}
+
+/* Button */
+.answerForm button {
+  align-self: flex-end;
+  background-color: #516cf0;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  font-size: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.answerForm button:hover {
+  background-color: #3f54c0;
+}
+
+/* Empty / error states */
+.notFoundText {
+  color: #666;
+  font-size: 16px;
+}
+
+
+
+
+
+
+.reactionBar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+
+.reactionBar {
+  display: flex;
+  gap: 18px;
+  margin-top: 6px;
+  align-items: center;
+}
+
+.reactionBar button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #555;
+  font-size: 14px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.reactionBar button:hover {
+  background: #eef1ff;
+  color: #516cf0;
+}
+
+.reactionBar svg {
+  font-size: 18px;
+}
+
+
+
+
+.commentSection {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.commentSection p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.commentSection textarea {
+  width: 100%;
+  min-height: 5px;
+  margin-top: 8px;
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.commentSection textarea:focus {
+  outline: none;
+  border-color: #516cf0;
+}
+
+.commentSection button {
+  margin-top: 6px;
+  align-self: flex-end;
+  background: #516cf0;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.commentSection button:hover {
+  background: #3f54c0;
+}
+
+
+/* Tablet and below */
+@media (max-width: 992px) {
+  .questionDetails {
+    max-width: 95%;
+    padding: 20px;
+  }
+
+  .question {
+    font-size: 26px;
+    padding-bottom: 20px;
+  }
+
+  .questionTitle {
+    font-size: 22px;
+  }
+
+  .questionDescripition,
+  .questionAskedby {
+    padding-left: 30px;
+    font-size: 18px;
+  }
+
+  .avatar {
+    font-size: 60px;
+  }
+
+  .answerText {
+    font-size: 14px;
+  }
+
+  .answerForm textarea {
+    font-size: 14px;
+  }
+
+  .answerForm button {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 600px) {
+  .questionDetails {
+    padding: 15px;
+    margin: 15px;
+  }
+
+  .question {
+    font-size: 22px;
+    padding-bottom: 15px;
+  }
+
+  .questionTitle {
+    font-size: 20px;
+  }
+
+  .questionDescripition,
+  .questionAskedby {
+    padding-left: 0;
+    font-size: 16px;
+  }
+
+  .avatar {
+    font-size: 50px;
+  }
+
+  .answerCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .answerUser {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+
+  .answerText {
+    font-size: 14px;
+  }
+
+  .answerForm button {
+    width: 100%;
+  }
+} 
+  
